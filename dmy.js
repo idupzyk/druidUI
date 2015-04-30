@@ -130,32 +130,97 @@ function processData(rawData) {
 
     return processed ;
 }
-        
+       
+//d3.select("body")
+//    .insert("button", ".table")
+//    .on("click", sortSheet).html("sort") ;
+//
+//d3.select("body")
+//    .insert("button", ".table")
+//    .on("click", restoreSheet).html("restore") ;
 
+function sortSheet() {
+    var dataset = d3.selectAll("div.datarow").data() ;
+
+    console.log(dataset[0]) ;
+
+    dataset.sort(function (a,b) {
+        var a = a["Impressions"] ;
+        var b = b["Impressions"] ;
+
+        return a<b ? 1 : (a>b ? -1 : 0) ;
+    }) ;
+
+    for (var idx in dataset) {
+        console.log(dataset[idx]["Impressions"]) ;
+    }
+
+    d3.select("div.table")
+        .selectAll("div.datarow")
+        .data(dataset)
+        .transition()
+        .duration(2000)
+        .style("top", function (d,i) { return (40+(i*40)) + "px";}) ;
+}
+
+function restoreSheet() {
+}
 
 function populateData (rowData) {
+
     //var headerValues = d3.keys(rowData[0]) ;
-    var headerValues = ["Advertiser", "Netflix Subcampaign", "Percent Completed", "Spend", "Impressions", "Reach", "Frequency", "CPM", "CTR", "Top Country", "Top Site"] ;
+    var headerValues = ["Advertiser", "Nflx Subcampaign", "Pct Completed", "Spend", "Impressions", "Reach", "Frequency", "CPM", "CTR", "Top Country", "Top Site"] ;
 
-    var table = d3.select("body").append("table") ;
+    var table = d3.select("body")
+        .append("div")
+        .attr("class", "table") ;
 
-    var header = table.append("tr")
+    // generate the table header
+    d3.select("div.table")
+        .append("div")
         .attr("class", "head")
-        .selectAll("th")
+        .selectAll("div.data")
         .data(headerValues)
         .enter()
-        .append("th")
-        .html(function (d) {return d;}) ;
+        .append("div")
+        .attr("class", "data")
+        .html(function (d) {return d;})
+        .style("left", function (d,i) { return (i*100) + "px"; }) ;
 
-
-    var trows = table.selectAll("tr")
+    d3.select("div.table")
+        .selectAll("div.datarow")
         .data(rowData)
         .enter()
-        .append("tr") ;
+        .append("div")
+        .attr("class", "datarow")
+        .style("top", function (d,i) { return (40+(i*40)) + "px";}) ;
 
-    var cells = trows.selectAll("td") 
+    d3.selectAll("div.datarow")
+        .selectAll("div.data")
         .data(function(d) { return d3.entries(d); })
         .enter()
-        .append("td")
-        .html(function (d) { return d.value; }) ;
+        .append("div")
+        .attr("class", "data")
+        .html(function (d) {return d.value;})
+        .style("left", function(d,i,j) { return (i*100) + "px";}) ;
+
+    //var header = table.append("tr")
+    //    .attr("class", "head")
+    //    .selectAll("th")
+    //    .data(headerValues)
+    //    .enter()
+    //    .append("th")
+    //    .html(function (d) {return d;}) ;
+
+
+    //var trows = table.selectAll("tr")
+    //    .data(rowData)
+    //    .enter()
+    //    .append("tr") ;
+
+    //var cells = trows.selectAll("td") 
+    //    .data(function(d) { return d3.entries(d); })
+    //    .enter()
+    //    .append("td")
+    //    .html(function (d) { return d.value; }) ;
 }

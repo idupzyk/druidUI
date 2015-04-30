@@ -15,9 +15,35 @@
         .head {
             white-space: nowrap;
         }
+        div.table {
+            position: relative;
+        }
+        div.data {
+            position: absolute;
+            width 90px;
+            padding: 0 5px;
+        }
+        div.head {
+            position: absolute;
+        }
+        div.datarow {
+            position: absolute;
+            width: 100% ;
+            border-top: 2px black solid;
+            background: white;
+            height: 35px;
+            overflow: hidden;
+        }
     </style>
     <body>
         <script type="text/JavaScript">
+            d3.select("body")
+                .insert("button", ".table")
+                .on("click", sortSheet).html("sort") ;
+            
+            d3.select("body")
+                .insert("button", ".table")
+                .on("click", restoreSheet).html("restore") ;
             //loadKeys("field_2") ;
             plotData = processData(sampleData) ;
             var tableData = populateData(plotData) ;
