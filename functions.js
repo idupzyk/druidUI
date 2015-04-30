@@ -46,18 +46,10 @@ function linearScale (rowData, field, outRange) {
     var tmp = {} ;
     console.log("length: "+rowData.length) ;
     for (var rec in rowData) {
-        //console.log("new_row") ;
-        //for (var key in rec) {
-        //    console.log(key) ;
-        //}
-        //console.log(rowData[rec]) ;
-        //console.log(rec[field]+" "+isInt(rec[field])+" "+isFloat(rec[field])) ;
         if (isInt(rowData[rec][field])) {
-            //console.log("in int") ;
             tmp[parseInt(rowData[rec][field])] = 0 ;
         }
         if (isFloat(rowData[rec][field])) {
-            //console.log("in float") ;
             tmp[parseFloat(rowData[rec][field])] = 0 ;
         }
     }
@@ -131,14 +123,6 @@ function processData(rawData) {
     return processed ;
 }
        
-//d3.select("body")
-//    .insert("button", ".table")
-//    .on("click", sortSheet).html("sort") ;
-//
-//d3.select("body")
-//    .insert("button", ".table")
-//    .on("click", restoreSheet).html("restore") ;
-
 function sortSheet() {
     var dataset = d3.selectAll("div.datarow").data() ;
 
@@ -155,16 +139,18 @@ function sortSheet() {
         console.log(dataset[idx]["Impressions"]) ;
     }
 
-    d3.select("div.table")
-        .selectAll("div.datarow")
+    d3.selectAll("div.datarow")
         .data(dataset)
         .transition()
-        .duration(2000)
+        .duration(1000)
         .style("top", function (d,i) { return (40+(i*40)) + "px";}) ;
-}
+} ;
+
 
 function restoreSheet() {
-}
+    //TBW
+} ;
+
 
 function populateData (rowData) {
 
@@ -204,23 +190,4 @@ function populateData (rowData) {
         .html(function (d) {return d.value;})
         .style("left", function(d,i,j) { return (i*100) + "px";}) ;
 
-    //var header = table.append("tr")
-    //    .attr("class", "head")
-    //    .selectAll("th")
-    //    .data(headerValues)
-    //    .enter()
-    //    .append("th")
-    //    .html(function (d) {return d;}) ;
-
-
-    //var trows = table.selectAll("tr")
-    //    .data(rowData)
-    //    .enter()
-    //    .append("tr") ;
-
-    //var cells = trows.selectAll("td") 
-    //    .data(function(d) { return d3.entries(d); })
-    //    .enter()
-    //    .append("td")
-    //    .html(function (d) { return d.value; }) ;
 }
