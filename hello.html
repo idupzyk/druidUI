@@ -1,0 +1,26 @@
+<!doctype html><meta charset="utf-8">
+<html>
+    <head>
+        <script src="d3.js" type="text/JavaScript"></script>
+        <script src="data.js" type="text/JavaScript"></script>
+        <script src="dmy.js" type="text/JavaScript"></script>
+    </head>
+    <style>
+        span.firstCol {
+            width: 1000px;
+        }
+        span.secondCol {
+            width: 100px;
+        }
+        .head {
+            white-space: nowrap;
+        }
+    </style>
+    <body>
+        <script type="text/JavaScript">
+            //loadKeys("field_2") ;
+            plotData = processData(sampleData) ;
+            var tableData = populateData(plotData) ;
+        </script>
+    </body>
+</html>
