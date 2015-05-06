@@ -8,10 +8,12 @@ var field = '' ;
 var columnWidths = [] ;
 var columnPos = [] ;
 var columnNames = [] ;
-var rowSpacing = 35 ;
+var rowSpacing = 26 ;
+var labelSpacing = 21 ;
 var charWidth = 8 ;
 var minLength = 10 ;
 var totalWidth = 0 ;
+var topOffset = 200 ;
 
 function getFilterKeys(column, jsonObj) {
     var temp = {} ;
@@ -181,7 +183,7 @@ function sortSheet(field) {
         .data(dataset, function(d) {return d["skey"];})
         .transition()
         .duration(1000)
-        .style("top", function (d,i) { return (2*40+(i*40)) + "px";}) ;
+        .style("top", function (d,i) { return (2*rowSpacing+(i*rowSpacing)+topOffset) + "px";}) ;
 
 } ;
 
@@ -192,6 +194,57 @@ function restoreSheet() {
 
 
 function populateData (rowData) {
+    topOffset = columnNames.length * labelSpacing
+    // generate the column selector
+    d3.select("body")
+        .append("div")
+        .attr("class", "selector") ;
+
+    d3.select("div.selector") 
+        .selectAll("div.labelRow")
+        .data(columnNames)
+        .enter()
+        .append("div")
+        .attr("class", "labelRow")
+        .style("width", "300px")
+        .style("top", function (d,i) { return (i*labelSpacing) + "px";}) ;
+
+    d3.selectAll("div.labelRow")
+        .selectAll("div.label")
+        .data(function(d) { console.log("vaule of d: "+d); return [d, d]; })
+        .enter()
+        .append("div")
+        .attr("class", "label")
+        .style("left", function (d,i, j) {return (i*150)+"px";})
+        .html(function (d,i) {return d ;}) ;
+
+
+    //d3.select("body")
+    //    .append("div")
+    //    .attr("class", "div.selector")
+    //    .selectAll("div.columnSelectors")
+    //    .data(columnNames)
+    //    .enter()
+    //    .append("div")
+    //    .attr("class", "div.columnSelectors")
+    //    .append("input")
+    //    .attr("type", "checkbox")
+    //    .attr("checked", "true")
+    //    .attr("id", function (d) {return d;}) 
+    //    .style("top", function (d,i) { return (i*rowSpacing)+"px";}) ;
+
+    //d3.select("body")
+    //    .append("div")
+    //    .attr("class", "div.selectLabel")
+    //    .selectAll("div.inputLabel")
+    //    .data(columnNames)
+    //    .enter()
+    //    .append("div")
+    //    .attr("class", "inputLabel")
+    //    .html(function (d) {return d;}) 
+    //    .style("top", function (d,i) { console.log((i*rowSpacing)+"px") ; return (i*rowSpacing)+"px";})
+    //    .style("left", "20px") ;
+
     // generate the table container
     var table = d3.select("body")
         .append("div")
@@ -207,6 +260,7 @@ function populateData (rowData) {
         .append("div")
         .attr("class", "data")
         .html(function (d) {return d;})
+        .style("top", function (d) { return (topOffset)+"px" ;}) 
         .style("left", function (d,i) { return columnPos[i] + "px"; }) ;
 
     // generate the sort buttons
@@ -219,7 +273,7 @@ function populateData (rowData) {
         .append("div")
         .attr("class", "sort")
         .style("left", function (d,i) { return columnPos[i] + "px"; }) 
-        .style("top", function (d) { return rowSpacing+"px" ;}) 
+        .style("top", function (d) { return (rowSpacing+topOffset)+"px" ;}) 
         .append("button", ".table")
         .on("click", function(d) { sortSheet(d) ;})
         .html("sort") ;
@@ -231,7 +285,7 @@ function populateData (rowData) {
         .enter()
         .append("div")
         .attr("class", "datarow")
-        .style("top", function (d,i) { return (2*rowSpacing+(i*rowSpacing)) + "px";}) 
+        .style("top", function (d,i) { return (2*rowSpacing+(i*rowSpacing)+topOffset) + "px";}) 
         .style("width", function () { return (totalWidth*charWidth)+"px"; }) ;
 
     // build the fields in the data rows
