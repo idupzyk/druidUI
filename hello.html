@@ -6,44 +6,51 @@
         <script src="functions.js" type="text/JavaScript"></script>
     </head>
     <style>
-        span.firstCol {
-            width: 1000px;
-        }
-        span.secondCol {
-            width: 100px;
-        }
         .head {
             white-space: nowrap;
         }
         div.table {
             position: relative;
         }
+        div.buttons {
+            white-space: nowrap;
+            position: absolute;
+            padding: 5px 5px;
+        }
+        div.sort {
+            position: absolute;
+            padding: 5px 5px;
+        }
         div.data {
             position: absolute;
-            width 90px;
-            padding: 0 5px;
+            padding: 5px 5px;
+            white-space: nowrap;
         }
         div.head {
             position: absolute;
         }
         div.datarow {
             position: absolute;
-            width: 100% ;
-            border-top: 2px black solid;
+            border-top: 1px black solid;
             background: white;
-            height: 35px;
-            overflow: hidden;
+            height: 30px;
         }
     </style>
     <body>
+        <!-- 
+        <form>
+            Sort Column: <input type="text" id="sortColumnName" name="sortField">
+        </form>
+        -->
         <script type="text/JavaScript">
-            d3.select("body")
-                .insert("button", ".table")
-                .on("click", sortSheet).html("sort") ;
-            
-            d3.select("body")
-                .insert("button", ".table")
-                .on("click", restoreSheet).html("restore") ;
+            //d3.select("#sortColumnName").on("input", update) ;
+            //d3.select("body")
+            //    .insert("button", ".table")
+            //    .on("click", sortSheet).html("sort") ;
+
+            //d3.select("body")
+            //    .insert("button", ".table")
+            //    .on("click", restoreSheet).html("restore") ;
             //loadKeys("field_2") ;
             plotData = processData(sampleData) ;
             var tableData = populateData(plotData) ;

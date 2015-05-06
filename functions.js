@@ -4,6 +4,15 @@ function sayHi() {
         .html("hello world") ;
 }
 
+var field = '' ;
+var columnWidths = [] ;
+var columnPos = [] ;
+var columnNames = [] ;
+var rowSpacing = 35 ;
+var charWidth = 8 ;
+var minLength = 10 ;
+var totalWidth = 0 ;
+
 function getFilterKeys(column, jsonObj) {
     var temp = {} ;
 
@@ -22,9 +31,9 @@ function getFilterKeys(column, jsonObj) {
 function loadKeys(col) {
     var keyList = getFilterKeys(col, sampleData) ;
 
-    for (var j=0 ; j<keyList.length ; j++) {
-        console.log(keyList[j]) ;
-    }
+    //for (var j=0 ; j<keyList.length ; j++) {
+    //    console.log(keyList[j]) ;
+    //}
 
     d3.select("#sidePane")
         .selectAll("div")
@@ -44,7 +53,7 @@ function isFloat(value) {
 
 function linearScale (rowData, field, outRange) {
     var tmp = {} ;
-    console.log("length: "+rowData.length) ;
+    //console.log("length: "+rowData.length) ;
     for (var rec in rowData) {
         if (isInt(rowData[rec][field])) {
             tmp[parseInt(rowData[rec][field])] = 0 ;
@@ -67,8 +76,6 @@ function linearScale (rowData, field, outRange) {
         }
     }
 
-    console.log("min: "+tmpMin) ;
-    console.log("max: "+tmpMax) ;
     return d3.scale.linear().domain([tmpMin, tmpMax]).range(outRange) ;
 }
 
@@ -80,7 +87,17 @@ function round(value, places) {
 }
 
 function processData(rawData) {
+    columnNames = ["Advertiser", "Netflix Subcampaign", "Insertion Order", "Percent Completed", "Spend", "Impressions", "Reach", "Frequency", "CPM", "CTR", "Top Country", "Top Site", "skey"] ;
+    for (var i=0; i< columnNames.length; i++) {
+        if (columnNames[i].length > minLength) {
+            columnWidths.push(columnNames[i].length) ;
+        } else {
+            columnWidths.push(minLength)
+        }
+    }
     var processed = [] ;
+
+    var sk = 0 ;
 
     for (var i in rawData) {
         var row = rawData[i] ;
@@ -101,10 +118,12 @@ function processData(rawData) {
         var ctr = round(clicks/impressions, 3) ;
         var top_country = row["top_country_code"] ;
         var top_site = row["top_site_name"] ;
+        var insertion_order = row["insertion_order_name"] ;
 
         var rowOut = {}
         rowOut["Advertiser"] = advertiser ;
         rowOut["Netflix Subcampaign"] = netflix_subcampaign ;
+        rowOut["Insertion Order"] = insertion_order ;
         rowOut["Percent Completed"] = pct_duration_complete ;
         rowOut["Spend"] = spend ;
         rowOut["Impressions"] = impressions ;
@@ -114,36 +133,56 @@ function processData(rawData) {
         rowOut["CTR"] = ctr ;
         rowOut["Top Country"] = top_country ;
         rowOut["Top Site"] = top_site ;
+        rowOut["skey"] = sk ;
+        sk += 1 ;
 
+        // populate the widths of the columns
+        for (var j=0; j<columnNames.length;j++) {
+            if (rowOut[columnNames[j]].length > columnWidths[j] ) {
+                columnWidths[j] = rowOut[columnNames[j]].length ;
+            }
+        }
         processed.push(rowOut) ;
-
-        //colums = ["Advertiser", "Netflix Subcampaign", "Percent Completed", "Spend", "Impressions", "Reach", "Frequency", "CPM", "CTR", "Top Country", "Top Site"] ;
     }
+
+    var sum = 0 ;
+    for (var idx=0; idx < columnWidths.length; idx += 1) {
+        columnPos.push(sum * charWidth) ;
+        sum += columnWidths[idx] ;
+    }
+
+    totalWidth = sum ;
 
     return processed ;
 }
+
+function update() {
+    field = d3.select("#sortColumnName").text(+this.value) ;
+}
+    
        
-function sortSheet() {
+function sortSheet(field) {
+    var dir = "desc" ;
     var dataset = d3.selectAll("div.datarow").data() ;
 
-    console.log(dataset[0]) ;
-
     dataset.sort(function (a,b) {
-        var a = a["Impressions"] ;
-        var b = b["Impressions"] ;
+        var a = a[field] ;
+        var b = b[field] ;
 
-        return a<b ? 1 : (a>b ? -1 : 0) ;
+        if (dir.toLowerCase() == 'asc') {
+            return a>b ? 1 : (a<b ? -1 : 0) ;
+        }
+        else {
+            return a<b ? 1 : (a>b ? -1 : 0) ;
+        }
     }) ;
 
-    for (var idx in dataset) {
-        console.log(dataset[idx]["Impressions"]) ;
-    }
-
     d3.selectAll("div.datarow")
-        .data(dataset)
+        .data(dataset, function(d) {return d["skey"];})
         .transition()
         .duration(1000)
-        .style("top", function (d,i) { return (40+(i*40)) + "px";}) ;
+        .style("top", function (d,i) { return (2*40+(i*40)) + "px";}) ;
+
 } ;
 
 
@@ -153,10 +192,7 @@ function restoreSheet() {
 
 
 function populateData (rowData) {
-
-    //var headerValues = d3.keys(rowData[0]) ;
-    var headerValues = ["Advertiser", "Nflx Subcampaign", "Pct Completed", "Spend", "Impressions", "Reach", "Frequency", "CPM", "CTR", "Top Country", "Top Site"] ;
-
+    // generate the table container
     var table = d3.select("body")
         .append("div")
         .attr("class", "table") ;
@@ -166,21 +202,39 @@ function populateData (rowData) {
         .append("div")
         .attr("class", "head")
         .selectAll("div.data")
-        .data(headerValues)
+        .data(columnNames)
         .enter()
         .append("div")
         .attr("class", "data")
         .html(function (d) {return d;})
-        .style("left", function (d,i) { return (i*100) + "px"; }) ;
+        .style("left", function (d,i) { return columnPos[i] + "px"; }) ;
 
+    // generate the sort buttons
+    d3.select("div.table")
+        .append("div")
+        .attr("class", "buttons")
+        .selectAll("div.data")
+        .data(columnNames)
+        .enter()
+        .append("div")
+        .attr("class", "sort")
+        .style("left", function (d,i) { return columnPos[i] + "px"; }) 
+        .style("top", function (d) { return rowSpacing+"px" ;}) 
+        .append("button", ".table")
+        .on("click", function(d) { sortSheet(d) ;})
+        .html("sort") ;
+
+    // build the data rows
     d3.select("div.table")
         .selectAll("div.datarow")
-        .data(rowData)
+        .data(rowData, function(d) {return d["skey"];})
         .enter()
         .append("div")
         .attr("class", "datarow")
-        .style("top", function (d,i) { return (40+(i*40)) + "px";}) ;
+        .style("top", function (d,i) { return (2*rowSpacing+(i*rowSpacing)) + "px";}) 
+        .style("width", function () { return (totalWidth*charWidth)+"px"; }) ;
 
+    // build the fields in the data rows
     d3.selectAll("div.datarow")
         .selectAll("div.data")
         .data(function(d) { return d3.entries(d); })
@@ -188,6 +242,6 @@ function populateData (rowData) {
         .append("div")
         .attr("class", "data")
         .html(function (d) {return d.value;})
-        .style("left", function(d,i,j) { return (i*100) + "px";}) ;
+        .style("left", function(d,i,j) { return columnPos[i] + "px";}) ;
 
-}
+    }
