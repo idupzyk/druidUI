@@ -242,7 +242,7 @@ function columnSubset(d,cols) {
     return out ;
 }
 
-function downloadData() {
+function csvExport() {
     var dataset = d3.selectAll("div.datarow").data() ;
     var csv = [] ;
     var row = [] ;

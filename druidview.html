@@ -23,7 +23,7 @@
             // download button
             d3.select("body")
                 .insert("button", ".table")
-                .on("click", downloadData).html("Download") ;
+                .on("click", csvExport).html("Download") ;
 
             plotData = processData(sampleData) ;
             populateCols() ;
