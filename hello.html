@@ -2,6 +2,7 @@
 <html>
     <head>
         <script src="d3.js" type="text/JavaScript"></script>
+        <script src="metadata.js" type="text/JavaScript"></script>
         <script src="data.js" type="text/JavaScript"></script>
         <script src="functions.js" type="text/JavaScript"></script>
     </head>
@@ -15,7 +16,7 @@
             white-space: nowrap;
         }
         div.table {
-            position: relative;
+            position: absolute;
         }
         div.buttons {
             white-space: nowrap;
@@ -51,13 +52,15 @@
             height: 25px;
             white-space: nowrap;
         }
+        div.topBanner {
+            height: 80px ;
+            width: 100% ;
+            background: dodgerblue;
+        }
     </style>
     <body>
-        <!-- 
-        <form>
-            Sort Column: <input type="text" id="sortColumnName" name="sortField">
-        </form>
-        -->
+        <div class="topBanner">
+        </div>
         <script type="text/JavaScript">
             d3.select("body")
                 .insert("button", ".table")

@@ -13,7 +13,8 @@ var labelSpacing = 21 ;
 var charWidth = 8 ;
 var minLength = 10 ;
 var totalWidth = 0 ;
-var topOffset = 200 ;
+var topOffset = 0;
+var horizOffset = 0 ; //200 ;
 
 var globalDataObj = [] ;
 
@@ -91,7 +92,7 @@ function round(value, places) {
 }
 
 function processData(rawData) {
-    columnNames = ["Advertiser", "Netflix Subcampaign", "Insertion Order", "Percent Completed", "Spend", "Impressions", "Reach", "Frequency", "CPM", "CTR", "Top Country", "Top Site", "skey"] ;
+    columnNames = ["Advertiser", "Netflix Subcampaign", "Insertion Order", "Percent Completed", "Spend", "Impressions", "Reach", "Frequency", "CPM", "CTR", "Top Country", "Top Site"] ;
     for (var i=0; i< columnNames.length; i++) {
         if (columnNames[i].length > minLength) {
             columnWidths.push(columnNames[i].length) ;
@@ -236,18 +237,12 @@ function populateCols () {
 }
 
 function columnSubset(d,cols) {
-    //console.log("cols: ") ;
-    //console.log(cols) ;
-    //console.log(d) ;
     var out = []
     for (key in d) {
-        //console.log(key) ;
         if (cols.indexOf(d[key]["key"]) != -1) {
             out.push(d[key]) ;
         }
     }
-    //console.log("out: ") ;
-    //console.log(out) ;
     return out ;
 }
 
@@ -255,8 +250,6 @@ function setColumnPositions(cols) {
     var newPos = [] ;
     var widths = [] ;
 
-    //console.log("columnWidths:") ;
-    //console.log(columnWidths) ;
     sum = 0 ;
     for (var i=0;i<cols.length;i++) {
         newPos.push(sum) ;
@@ -269,6 +262,9 @@ function setColumnPositions(cols) {
     //console.log(newPos) ;
 
     return newPos ;
+}
+
+function aggregate(data, cols, metadata) {
 }
 
 
@@ -284,7 +280,8 @@ function populateData (rowData, cols) {
     // generate the table container
     var table = d3.select("body")
         .append("div")
-        .attr("class", "table") ;
+        .attr("class", "table") 
+        .style("left", horizOffset) ;
 
     // generate the table header
     d3.select("div.table")
@@ -297,7 +294,7 @@ function populateData (rowData, cols) {
         .attr("class", "data")
         .html(function (d) {return d;})
         .style("top", function (d) { return (topOffset)+"px" ;}) 
-        .style("left", function (d,i) { return position[i] + "px"; }) ;
+        .style("left", function (d,i) { return (position[i]+horizOffset) + "px"; }) ;
 
     // generate the sort buttons
     d3.select("div.table")
@@ -308,7 +305,7 @@ function populateData (rowData, cols) {
         .enter()
         .append("div")
         .attr("class", "sort")
-        .style("left", function (d,i) { return position[i] + "px"; }) 
+        .style("left", function (d,i) { return (position[i]+horizOffset) + "px"; }) 
         .style("top", function (d) { return (rowSpacing+topOffset)+"px" ;}) 
         .append("button", ".table")
         .on("click", function(d) { sortSheet(d) ;})
@@ -332,7 +329,7 @@ function populateData (rowData, cols) {
         .append("div")
         .attr("class", "data")
         .html(function (d) {return d.value;})
-        .style("left", function(d,i,j) { return position[i] + "px";}) ;
+        .style("left", function(d,i,j) { return (position[i]+horizOffset) + "px";}) ;
 
     //getCheckedCols() ;
 }
