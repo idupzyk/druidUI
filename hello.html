@@ -7,8 +7,12 @@
         <script src="functions.js" type="text/JavaScript"></script>
     </head>
     <style>
-        .head {
+        div.head {
             white-space: nowrap;
+            position: absolute ;
+        }
+        html {
+            width: 100% ;
         }
         div.selector {
             position: relative;
@@ -17,37 +21,35 @@
         }
         div.table {
             position: absolute;
+            left: 200px;
         }
         div.buttons {
             white-space: nowrap;
-            position: absolute;
+            position: absolute ;
             padding: 5px 5px;
         }
         div.sort {
-            position: absolute;
+            position: absolute ;
             padding: 5px 5px;
         }
         div.label {
-            position: absolute;
+            position: absolute ;
             padding: 5px 5px;
             white-space: nowrap;
         }
         div.data {
-            position: absolute;
+            position: absolute ;
             padding: 5px 5px;
             white-space: nowrap;
         }
-        div.head {
-            position: absolute;
-        }
         div.datarow {
-            position: absolute;
+            position: absolute ;
             border-top: 1px black solid;
             background: white;
             height: 25px;
         }
         div.labelRow {
-            position: absolute;
+            position: absolute ;
             background: white;
             height: 25px;
             white-space: nowrap;
@@ -56,23 +58,37 @@
             height: 80px ;
             width: 100% ;
             background: dodgerblue;
+            max-height: 80px ;
+        }
+        div.titleText {
+            vertical-align: middle;
+            font-size: 50px ;
+            padding: 10px ;
+            color: orange;
+        }
+        input.columnSelector {
+            transform: scale(1.5);
         }
     </style>
     <body>
         <div class="topBanner">
+            <div class=titleText>
+                Druid View
+            </div>
         </div>
         <script type="text/JavaScript">
+            //update button
             d3.select("body")
                 .insert("button", ".table")
                 .on("click", getCheckedCols).html("Update") ;
 
-            //d3.select("body")
-            //    .insert("button", ".table")
-            //    .on("click", restoreSheet).html("restore") ;
-            //loadKeys("field_2") ;
-                plotData = processData(sampleData) ;
-                populateCols() ;
-            //var tableData = populateData(plotData) ;
+            // download button
+            d3.select("body")
+                .insert("button", ".table")
+                .on("click", downloadData).html("Download") ;
+
+            plotData = processData(sampleData) ;
+            populateCols() ;
         </script>
     </body>
 </html>

@@ -8,15 +8,16 @@ var field = '' ;
 var columnWidths = [] ;
 var columnPos = [] ;
 var columnNames = [] ;
-var rowSpacing = 26 ;
-var labelSpacing = 21 ;
+var rowSpacing = 27;
+var labelSpacing = 26 ;
 var charWidth = 8 ;
 var minLength = 10 ;
 var totalWidth = 0 ;
 var topOffset = 0;
-var horizOffset = 0 ; //200 ;
+var horizOffset = 0 ;
 
 var globalDataObj = [] ;
+var checkedCols = [] ;
 
 function getFilterKeys(column, jsonObj) {
     var temp = {} ;
@@ -188,32 +189,27 @@ function sortSheet(field) {
 
 } ;
 
-
-function restoreSheet() {
-    //TBW
-} ;
-
-//function buildField(field) {
-    //if (field.type == "input") {
-    //
-
 function getCheckedCols() {
+    // clear checked Cols
+    checkedCols = [] ;
     var inputs = document.getElementsByClassName("columnSelector") ;
-    var checkedCols = [] ;
     for (var i=0; i<inputs.length;i++) {
         if (inputs[i].checked) {
             checkedCols.push(inputs[i].name) ;
         }
     }
-    //console.log("checkedCols: ") ;
-    //console.log(checkedCols) ;
 
     populateData(globalDataObj, checkedCols) ;
 }
 
 function populateCols () {
-    // generate the column selector
+    // generate the overall container
     d3.select("body")
+        .append("div")
+        .attr("class", "container") ;
+
+    // generate the column selector
+    d3.select("div.container")
         .append("div")
         .attr("class", "selector") ;
 
@@ -224,7 +220,7 @@ function populateCols () {
         .append("div")
         .attr("class", "labelRow")
         .style("width", "300px")
-        .style("top", function (d,i) { return (i*labelSpacing) + "px";}) ;
+        .style("top", function (d,i) { return (i*labelSpacing+5) + "px";}) ;
 
     d3.selectAll("div.labelRow")
         .selectAll("div.label")
@@ -246,6 +242,37 @@ function columnSubset(d,cols) {
     return out ;
 }
 
+function downloadData() {
+    var dataset = d3.selectAll("div.datarow").data() ;
+    var csv = [] ;
+    var row = [] ;
+    csv.push("\""+checkedCols.join("\",\"")+"\"") ;
+    for (var i=0; i<dataset.length;i++) {
+        row = [] ;
+        for (var j=0; j<checkedCols.length;j++) {
+            var innerValue = dataset[i][checkedCols[j]] ;
+            try {
+                var result = innerValue.replace(/"/g, '""') ;
+                if (result.search(/("|,|\n)/g) >= 0) {
+                    result = '"' + result + '"' ;
+                }
+            } catch(err) {
+                var result = innerValue ;
+            }
+            row.push(result) ;
+        }
+        csv.push(row.join(",")) ;
+    }
+
+    output = csv.join("\n") ;
+    console.log(output) ;
+
+    var file = document.createElement('a') ;
+    file.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(output));
+    file.setAttribute('download', 'data.csv');
+    file.click() ;
+}
+
 function setColumnPositions(cols) {
     var newPos = [] ;
     var widths = [] ;
@@ -253,13 +280,10 @@ function setColumnPositions(cols) {
     sum = 0 ;
     for (var i=0;i<cols.length;i++) {
         newPos.push(sum) ;
-        //console.log("cols: "+cols[i]+" "+columnWidths[columnNames.indexOf(cols[i])]) ;
         sum += columnWidths[columnNames.indexOf(cols[i])]*charWidth ;
     }
     // last item is the total length
     newPos.push(sum) ;
-    //console.log("new positions:") ;
-    //console.log(newPos) ;
 
     return newPos ;
 }
@@ -267,21 +291,19 @@ function setColumnPositions(cols) {
 function aggregate(data, cols, metadata) {
 }
 
-
 function populateData (rowData, cols) {
     d3.select("div.table").remove() ;
-
-    topOffset = columnNames.length * labelSpacing ;
 
     // reset the widths and positions
     position = setColumnPositions(cols) ;
     tableWidth = position[position.length-1] ;
+    console.log("tableWidth: "+tableWidth) ;
 
     // generate the table container
-    var table = d3.select("body")
+    var table = d3.select("div.container")
         .append("div")
-        .attr("class", "table") 
-        .style("left", horizOffset) ;
+        .attr("class", "table") ;
+        //.style("left", horizOffset) ;
 
     // generate the table header
     d3.select("div.table")
@@ -318,7 +340,7 @@ function populateData (rowData, cols) {
         .enter()
         .append("div")
         .attr("class", "datarow")
-        .style("top", function (d,i) { return (2*rowSpacing+(i*rowSpacing)+topOffset) + "px";}) 
+        .style("top", function (d,i) { return (2*rowSpacing+(i*rowSpacing)+topOffset+6) + "px";}) 
         .style("width", function () { return (tableWidth)+"px"; }) ;
 
     // build the fields in the data rows
@@ -330,6 +352,4 @@ function populateData (rowData, cols) {
         .attr("class", "data")
         .html(function (d) {return d.value;})
         .style("left", function(d,i,j) { return (position[i]+horizOffset) + "px";}) ;
-
-    //getCheckedCols() ;
 }
