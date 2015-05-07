@@ -15,6 +15,8 @@ var minLength = 10 ;
 var totalWidth = 0 ;
 var topOffset = 200 ;
 
+var globalDataObj = [] ;
+
 function getFilterKeys(column, jsonObj) {
     var temp = {} ;
 
@@ -144,7 +146,7 @@ function processData(rawData) {
                 columnWidths[j] = rowOut[columnNames[j]].length ;
             }
         }
-        processed.push(rowOut) ;
+        globalDataObj.push(rowOut) ;
     }
 
     var sum = 0 ;
@@ -154,8 +156,6 @@ function processData(rawData) {
     }
 
     totalWidth = sum ;
-
-    return processed ;
 }
 
 function update() {
@@ -192,9 +192,25 @@ function restoreSheet() {
     //TBW
 } ;
 
+//function buildField(field) {
+    //if (field.type == "input") {
+    //
 
-function populateData (rowData) {
-    topOffset = columnNames.length * labelSpacing
+function getCheckedCols() {
+    var inputs = document.getElementsByClassName("columnSelector") ;
+    var checkedCols = [] ;
+    for (var i=0; i<inputs.length;i++) {
+        if (inputs[i].checked) {
+            checkedCols.push(inputs[i].name) ;
+        }
+    }
+    //console.log("checkedCols: ") ;
+    //console.log(checkedCols) ;
+
+    populateData(globalDataObj, checkedCols) ;
+}
+
+function populateCols () {
     // generate the column selector
     d3.select("body")
         .append("div")
@@ -211,39 +227,59 @@ function populateData (rowData) {
 
     d3.selectAll("div.labelRow")
         .selectAll("div.label")
-        .data(function(d) { console.log("vaule of d: "+d); return [d, d]; })
+        .data(function(d) { /*console.log("vaule of d: "+d);*/ return [d]; })
         .enter()
         .append("div")
         .attr("class", "label")
         .style("left", function (d,i, j) {return (i*150)+"px";})
-        .html(function (d,i) {return d ;}) ;
+        .html(function (d,i) {return "<input type=\"checkbox\" class=\"columnSelector\" name=\""+d+"\" >"+d ;}) ;
+}
+
+function columnSubset(d,cols) {
+    //console.log("cols: ") ;
+    //console.log(cols) ;
+    //console.log(d) ;
+    var out = []
+    for (key in d) {
+        //console.log(key) ;
+        if (cols.indexOf(d[key]["key"]) != -1) {
+            out.push(d[key]) ;
+        }
+    }
+    //console.log("out: ") ;
+    //console.log(out) ;
+    return out ;
+}
+
+function setColumnPositions(cols) {
+    var newPos = [] ;
+    var widths = [] ;
+
+    //console.log("columnWidths:") ;
+    //console.log(columnWidths) ;
+    sum = 0 ;
+    for (var i=0;i<cols.length;i++) {
+        newPos.push(sum) ;
+        //console.log("cols: "+cols[i]+" "+columnWidths[columnNames.indexOf(cols[i])]) ;
+        sum += columnWidths[columnNames.indexOf(cols[i])]*charWidth ;
+    }
+    // last item is the total length
+    newPos.push(sum) ;
+    //console.log("new positions:") ;
+    //console.log(newPos) ;
+
+    return newPos ;
+}
 
 
-    //d3.select("body")
-    //    .append("div")
-    //    .attr("class", "div.selector")
-    //    .selectAll("div.columnSelectors")
-    //    .data(columnNames)
-    //    .enter()
-    //    .append("div")
-    //    .attr("class", "div.columnSelectors")
-    //    .append("input")
-    //    .attr("type", "checkbox")
-    //    .attr("checked", "true")
-    //    .attr("id", function (d) {return d;}) 
-    //    .style("top", function (d,i) { return (i*rowSpacing)+"px";}) ;
+function populateData (rowData, cols) {
+    d3.select("div.table").remove() ;
 
-    //d3.select("body")
-    //    .append("div")
-    //    .attr("class", "div.selectLabel")
-    //    .selectAll("div.inputLabel")
-    //    .data(columnNames)
-    //    .enter()
-    //    .append("div")
-    //    .attr("class", "inputLabel")
-    //    .html(function (d) {return d;}) 
-    //    .style("top", function (d,i) { console.log((i*rowSpacing)+"px") ; return (i*rowSpacing)+"px";})
-    //    .style("left", "20px") ;
+    topOffset = columnNames.length * labelSpacing ;
+
+    // reset the widths and positions
+    position = setColumnPositions(cols) ;
+    tableWidth = position[position.length-1] ;
 
     // generate the table container
     var table = d3.select("body")
@@ -255,24 +291,24 @@ function populateData (rowData) {
         .append("div")
         .attr("class", "head")
         .selectAll("div.data")
-        .data(columnNames)
+        .data(cols)
         .enter()
         .append("div")
         .attr("class", "data")
         .html(function (d) {return d;})
         .style("top", function (d) { return (topOffset)+"px" ;}) 
-        .style("left", function (d,i) { return columnPos[i] + "px"; }) ;
+        .style("left", function (d,i) { return position[i] + "px"; }) ;
 
     // generate the sort buttons
     d3.select("div.table")
         .append("div")
         .attr("class", "buttons")
         .selectAll("div.data")
-        .data(columnNames)
+        .data(cols)
         .enter()
         .append("div")
         .attr("class", "sort")
-        .style("left", function (d,i) { return columnPos[i] + "px"; }) 
+        .style("left", function (d,i) { return position[i] + "px"; }) 
         .style("top", function (d) { return (rowSpacing+topOffset)+"px" ;}) 
         .append("button", ".table")
         .on("click", function(d) { sortSheet(d) ;})
@@ -281,21 +317,22 @@ function populateData (rowData) {
     // build the data rows
     d3.select("div.table")
         .selectAll("div.datarow")
-        .data(rowData, function(d) {return d["skey"];})
+        .data(rowData, function(d) {/*console.log("HELLO"); console.log(d) ;*/ return d["skey"];})
         .enter()
         .append("div")
         .attr("class", "datarow")
         .style("top", function (d,i) { return (2*rowSpacing+(i*rowSpacing)+topOffset) + "px";}) 
-        .style("width", function () { return (totalWidth*charWidth)+"px"; }) ;
+        .style("width", function () { return (tableWidth)+"px"; }) ;
 
     // build the fields in the data rows
     d3.selectAll("div.datarow")
         .selectAll("div.data")
-        .data(function(d) { return d3.entries(d); })
+        .data(function(d) { /*console.log("subset") ; console.log(columnSubset(d3.entries(d), cols));*/ return columnSubset(d3.entries(d), cols); })
         .enter()
         .append("div")
         .attr("class", "data")
         .html(function (d) {return d.value;})
-        .style("left", function(d,i,j) { return columnPos[i] + "px";}) ;
+        .style("left", function(d,i,j) { return position[i] + "px";}) ;
 
-    }
+    //getCheckedCols() ;
+}

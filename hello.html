@@ -59,17 +59,17 @@
         </form>
         -->
         <script type="text/JavaScript">
-            //d3.select("#sortColumnName").on("input", update) ;
-            //d3.select("body")
-            //    .insert("button", ".table")
-            //    .on("click", sortSheet).html("sort") ;
+            d3.select("body")
+                .insert("button", ".table")
+                .on("click", getCheckedCols).html("Update") ;
 
             //d3.select("body")
             //    .insert("button", ".table")
             //    .on("click", restoreSheet).html("restore") ;
             //loadKeys("field_2") ;
-            plotData = processData(sampleData) ;
-            var tableData = populateData(plotData) ;
+                plotData = processData(sampleData) ;
+                populateCols() ;
+            //var tableData = populateData(plotData) ;
         </script>
     </body>
 </html>
