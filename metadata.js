@@ -5,7 +5,7 @@ var metadata = {
         , "Insertion Order": {"type":"dimension", "agg":"none"}
         , "Percent Completed": {"type":"dimension", "agg":"none"}
         , "Spend": {"type":"dimension", "agg":"none"}
-        , "Impression": {"type":"dimension", "agg":"sum"}
+        , "Impressions": {"type":"dimension", "agg":"sum"}
         , "Reach": {"type":"dimension", "agg":"count distinct"}
         , "Frequency": {"type":"metric", "agg":"average"}
         , "CPM": {"type":"dimension", "agg":"average"}
@@ -13,7 +13,7 @@ var metadata = {
         , "Top Country": {"type":"dimension", "agg":"max"}
         , "Top Site": {"type":"dimension", "agg":"max"}
     }
-    , "blah":{
+    , "DBM Impressions":{
         "col1":1
         , "col2":1
         , "col3":1
@@ -24,6 +24,5 @@ var metadata = {
 
 var datasources = [
     "Insertion Order",
-    "blah",
     "DBM Impressions",
     "DCM Impressions" ] ;

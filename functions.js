@@ -229,11 +229,14 @@ function keys(dict) {
 function populateCols (datasrc) {
     // initialize columns
     if (datasrc == 'init') {
+        datasrc = datasources[0] ;
         columnNames = keys(metadata[datasources[0]]) ;
     } else {
         d3.select("div.container").remove() ;
         columnNames = keys(metadata[datasrc]) ;
     }
+
+    d3.select("div.sourceName").html("Druid View: "+datasrc) ;
 
     // generate the overall container
     d3.select("body")

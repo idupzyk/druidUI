@@ -1,3 +1,6 @@
+body {
+    margin: 0px;
+}
 div.head {
     white-space: nowrap;
     position: absolute ;
@@ -89,14 +92,17 @@ div.topBanner {
 }
 div.titleText {
     vertical-align: middle;
+    white-space: nowrap;
     font-size: 50px ;
     padding: 10px ;
     color: orange;
+    display: inline-block;
 }
 input.columnSelector {
     transform: scale(1.5);
 }
 div.container {
+    margin: 10px ;
     width: 1500px;
     height: 100%;
 }
