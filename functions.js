@@ -396,12 +396,15 @@ function populateData (rowData, cols) {
 
     // build the data rows
     d3.select("div.table")
+        .append("div")
+        .attr("class", "tableData")
+        .style("top", function (d) { return ((2*rowSpacing)+topOffset)+"px" ;}) 
         .selectAll("div.datarow")
         .data(rowData, function(d) {/*console.log("HELLO"); console.log(d) ;*/ return d["skey"];})
         .enter()
         .append("div")
         .attr("class", "datarow")
-        .style("top", function (d,i) { return (2*rowSpacing+(i*rowSpacing)+topOffset+6) + "px";}) 
+        .style("top", function (d,i) { return ((i*rowSpacing)+topOffset+6) + "px";}) 
         .style("width", function () { return (tableWidth)+"px"; }) ;
 
     // build the fields in the data rows

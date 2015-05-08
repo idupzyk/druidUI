@@ -37,12 +37,18 @@ div.selector {
     border: 1px solid black;
     overflow: scroll;
 }
+div.tableData {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: scroll;
+    float: right;
+}
 div.table {
     position: absolute;
     left: 20%;
     width: 80%;
     height: 85%;
-    overflow: scroll;
     float: right;
 }
 div.buttons {
