@@ -1,3 +1,19 @@
+/* 
+ * Author: Ian Dupzyk
+ *
+ * To Do:
+ * wrap the rows of the table in a different div
+ * so they can scroll without the column headers 
+ * scrolling vertically
+ *
+ * add another pane under the column list with a 
+ * list of the available sources in druid
+ *
+ * create an aggregation function to properly agg
+ * the column the user would like to see
+ *
+ */
+
 function sayHi() {
     d3.select("body").append("div")
         .style("border", "1px black solid")
@@ -202,14 +218,55 @@ function getCheckedCols() {
     populateData(globalDataObj, checkedCols) ;
 }
 
-function populateCols () {
+function keys(dict) {
+    var key = [] ;
+    for (k in dict) {
+        key.push(k);
+    }
+    return key ;
+}
+
+function populateCols (datasrc) {
+    // initialize columns
+    if (datasrc == 'init') {
+        columnNames = keys(metadata[datasources[0]]) ;
+    } else {
+        d3.select("div.container").remove() ;
+        columnNames = keys(metadata[datasrc]) ;
+    }
+
     // generate the overall container
     d3.select("body")
         .append("div")
         .attr("class", "container") ;
 
-    // generate the column selector
     d3.select("div.container")
+        .append("div")
+        .attr("class", "sidePane") ;
+
+    // populate the different sources
+    d3.select("div.sidePane")
+        .append("div")
+        .attr("class", "srcSelector") ;
+    
+    d3.select("div.srcSelector") 
+        .selectAll("div.srcRow")
+        .data(datasources)
+        .enter()
+        .append("div")
+        .attr("class", "srcRow") ;
+
+    d3.selectAll("div.srcRow")
+        .selectAll("div.src")
+        .data(function(d) { return [d];})
+        .enter()
+        .append("button")
+        .style("width", "150px") 
+        .on("click", function(d) { populateCols(d);})
+        .html(function (d) {return d;}) ;
+
+    // generate the column selector
+    d3.select("div.sidePane")
         .append("div")
         .attr("class", "selector") ;
 
@@ -218,9 +275,9 @@ function populateCols () {
         .data(columnNames)
         .enter()
         .append("div")
-        .attr("class", "labelRow")
-        .style("width", "300px")
-        .style("top", function (d,i) { return (i*labelSpacing+5) + "px";}) ;
+        .attr("class", "labelRow") ;
+        //.style("width", "300px") ;
+        //.style("top", function (d,i) { return (i*labelSpacing+5) + "px";}) ;
 
     d3.selectAll("div.labelRow")
         .selectAll("div.label")
@@ -228,8 +285,9 @@ function populateCols () {
         .enter()
         .append("div")
         .attr("class", "label")
-        .style("left", function (d,i, j) {return (i*150)+"px";})
         .html(function (d,i) {return "<input type=\"checkbox\" class=\"columnSelector\" name=\""+d+"\" >"+d ;}) ;
+        //.style("left", function (d,i, j) {return (i*150)+"px";})
+
 }
 
 function columnSubset(d,cols) {

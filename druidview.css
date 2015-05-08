@@ -1,0 +1,102 @@
+div.head {
+    white-space: nowrap;
+    position: absolute ;
+}
+html {
+    width: 100% ;
+}
+div.srcSelector {
+    position: relative;
+    width: 100%;
+    height: 30% ;
+    white-space: nowrap;
+    float: left;
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px solid black;
+    bottom: 0px ;
+    overflow: scroll;
+    margin-bottom:5px;
+}
+div.sidePane{
+    position: relative;
+    width: 12%;
+    margin-top:5px;
+}
+div.selector {
+    position: relative;
+    width: 100%;
+    height: 60%;
+    white-space: nowrap;
+    float: left;
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px solid black;
+    overflow: scroll;
+}
+div.table {
+    position: absolute;
+    left: 20%;
+    width: 80%;
+    height: 85%;
+    overflow: scroll;
+    float: right;
+}
+div.buttons {
+    white-space: nowrap;
+    position: absolute ;
+    padding: 5px 5px;
+}
+div.sort {
+    position: absolute ;
+    padding: 5px 5px;
+}
+div.label {
+    position: absolute ;
+    padding: 5px 5px;
+    white-space: nowrap;
+}
+div.data {
+    position: absolute ;
+    padding: 5px 5px;
+    white-space: nowrap;
+}
+div.datarow {
+    position: absolute ;
+    border-top: 1px black solid;
+    background: white;
+    height: 25px;
+}
+div.srcRow {
+    position: relative ;
+    width: 15%;
+    background: white;
+    height: 25px;
+    white-space: nowrap;
+}
+div.labelRow {
+    position: relative ;
+    width: 15%;
+    background: white;
+    height: 25px;
+    white-space: nowrap;
+}
+div.topBanner {
+    height: 10% ;
+    width: 100% ;
+    background: dodgerblue;
+    max-height: 80px ;
+}
+div.titleText {
+    vertical-align: middle;
+    font-size: 50px ;
+    padding: 10px ;
+    color: orange;
+}
+input.columnSelector {
+    transform: scale(1.5);
+}
+div.container {
+    width: 1500px;
+    height: 100%;
+}

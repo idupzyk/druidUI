@@ -13,9 +13,17 @@ var metadata = {
         , "Top Country": {"type":"dimension", "agg":"max"}
         , "Top Site": {"type":"dimension", "agg":"max"}
     }
+    , "blah":{
+        "col1":1
+        , "col2":1
+        , "col3":1
+        , "col4":1
+        , "col5":1
+    }
 }
 
 var datasources = [
     "Insertion Order",
+    "blah",
     "DBM Impressions",
     "DCM Impressions" ] ;
