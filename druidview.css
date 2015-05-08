@@ -11,7 +11,7 @@ html {
 div.srcSelector {
     position: relative;
     width: 100%;
-    height: 30% ;
+    height: 20vh ;
     white-space: nowrap;
     float: left;
     border-radius: 10px;
@@ -23,13 +23,14 @@ div.srcSelector {
 }
 div.sidePane{
     position: relative;
-    width: 12%;
+    width: 14%;
     margin-top:5px;
+    height: 85% ;
 }
 div.selector {
     position: relative;
     width: 100%;
-    height: 60%;
+    height: 50vh;
     white-space: nowrap;
     float: left;
     border-radius: 10px;
@@ -50,6 +51,8 @@ div.table {
     width: 80%;
     height: 85%;
     float: right;
+    overflow: scroll;
+    top: 90px;
 }
 div.buttons {
     white-space: nowrap;
@@ -109,6 +112,9 @@ input.columnSelector {
 }
 div.container {
     margin: 10px ;
-    width: 1500px;
+    width: 1200px;
     height: 100%;
 }
+div.container:after { content: " "; display: block; clear: both;}
+div.sidePane:after { content: " "; display: block; clear: both;}
+div.table:after { content: " "; display: block; clear: both;}

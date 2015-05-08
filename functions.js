@@ -264,7 +264,7 @@ function populateCols (datasrc) {
         .data(function(d) { return [d];})
         .enter()
         .append("button")
-        .style("width", "150px") 
+        .style("width", "168px") 
         .on("click", function(d) { populateCols(d);})
         .html(function (d) {return d;}) ;
 
@@ -288,7 +288,7 @@ function populateCols (datasrc) {
         .enter()
         .append("div")
         .attr("class", "label")
-        .html(function (d,i) {return "<input type=\"checkbox\" class=\"columnSelector\" name=\""+d+"\" >"+d ;}) ;
+        .html(function (d,i) {return "<input type=\"checkbox\" class=\"columnSelector\" name=\""+d+"\" >&nbsp"+d ;}) ;
         //.style("left", function (d,i, j) {return (i*150)+"px";})
 
 }
@@ -396,16 +396,16 @@ function populateData (rowData, cols) {
 
     // build the data rows
     d3.select("div.table")
-        .append("div")
-        .attr("class", "tableData")
-        .style("top", function (d) { return ((2*rowSpacing)+topOffset)+"px" ;}) 
         .selectAll("div.datarow")
         .data(rowData, function(d) {/*console.log("HELLO"); console.log(d) ;*/ return d["skey"];})
         .enter()
         .append("div")
         .attr("class", "datarow")
-        .style("top", function (d,i) { return ((i*rowSpacing)+topOffset+6) + "px";}) 
+        .style("top", function (d,i) { return (2*rowSpacing+(i*rowSpacing)+topOffset+6) + "px";}) 
         .style("width", function () { return (tableWidth)+"px"; }) ;
+        //.append("div")
+        //.attr("class", "tableData")
+        //.style("top", function (d) { return ((2*rowSpacing)+topOffset)+"px" ;}) 
 
     // build the fields in the data rows
     d3.selectAll("div.datarow")
