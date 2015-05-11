@@ -41,4 +41,11 @@ var metadata = {
 var datasources = [
     "Insertion Order",
     "DBM Impressions",
-    "DCM Impressions" ] ;
+    "DCM Impressions",
+    "Other Source 1",
+    "Other Source 2",
+    "Other Source 3",
+    "Other Source 4",
+    "Other Source 5",
+    "Other Source 6"
+    ] ;
