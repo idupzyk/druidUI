@@ -21,9 +21,9 @@ var bodyParser = require('body-parser') ;
 var app = express() ;
 var env = 'test' ;
 
-app.use('/lib', express.static('lib')));
-app.use('/img', express.static('img')));
-app.use('/html', express.static('html')));
+//app.use('/lib', express.static('lib'));
+//app.use('/img', express.static('img'));
+app.use('/static', express.static('public'));
 
 app.post('/api/druid', function(req, res) {
     console.log(req.body) ;
