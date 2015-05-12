@@ -14,12 +14,6 @@
  *
  */
 
-function sayHi() {
-    d3.select("body").append("div")
-        .style("border", "1px black solid")
-        .html("hello world") ;
-}
-
 var field = '' ;
 var columnWidths = [] ;
 var columnPos = [] ;
@@ -34,6 +28,7 @@ var horizOffset = 0 ;
 
 var globalDataObj = [] ;
 var checkedCols = [] ;
+
 
 function getFilterKeys(column, jsonObj) {
     var temp = {} ;
@@ -230,10 +225,10 @@ function populateCols (datasrc) {
     // initialize columns
     if (datasrc == 'init') {
         datasrc = datasources[0] ;
-        columnNames = keys(metadata[datasources[0]]) ;
+        columnNames = keys(metadata[datasources[0]]["fields"]) ;
     } else {
         d3.select("div.container").remove() ;
-        columnNames = keys(metadata[datasrc]) ;
+        columnNames = keys(metadata[datasrc]["fields"]) ;
     }
 
     d3.select("div.sourceName").html("Druid View: "+datasrc) ;
@@ -349,11 +344,65 @@ function setColumnPositions(cols) {
     return newPos ;
 }
 
+function makeHttpObject() {
+    try {
+        return new XMLHttpRequest();
+    }
+    catch (error) {}
+    try {
+        return new ActiveXObject("Msxml2.XMLHTTP");
+    }
+    catch (error) {}
+    try {
+        return new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    catch (error) {}
+
+    throw new Error("Could not create HTTP request object.");
+}
+
 function aggregate(data, cols, metadata) {
+}
+
+function queryDruid(cols) {
+    var env = "test" ;
+    var request = makeHttpObject() ;
+    var datastore = "http://ec2-54-145-95-188.compute-1.amazonaws.com:3000/api/druid" ;
+    //var datastore = "http://druid-broker.us-east-1.dyn"+env+".netflix.net:7103/druid/v2/?pretty" ;
+
+    var query = {
+        "queryType": "groupBy",
+        "dataSource": "ignite_retention_cube_t35",
+        "granularity": "all",
+        "dimensions": [
+          "test_id",
+          "test_cell_nbr"
+        ],
+        "aggregations": [
+          {"name":"allocation_cnt", "type":"longSum", "fieldName":"allocation_cnt"},
+          {"name":"subscrn_cnt", "type":"longSum", "fieldName":"subscrn_cnt"},
+          {"name":"nonzero_price_plan_cnt", "type":"longSum", "fieldName":"nonzero_price_plan_cnt"},
+          {"name":"predicted_tenure_months", "type":"doubleSum", "fieldName":"predicted_tenure_months"}
+        ],
+      "filter": {
+        "type":"and", "fields": [
+            {"type":"selector", "dimension":"test_id", "value":"6073"}
+          ]
+        },
+        "intervals": ["2015-01-10T00:00/2015-04-18T00:00"]
+    }
+
+    request.open("POST", datastore, 'false') ;
+    request.send(query) ;
+
+    console.log(request.responseText) ;
 }
 
 function populateData (rowData, cols) {
     d3.select("div.table").remove() ;
+
+    //query for the new data
+    queryDruid(cols) ;
 
     // reset the widths and positions
     position = setColumnPositions(cols) ;
