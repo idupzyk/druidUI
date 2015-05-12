@@ -22,7 +22,9 @@ var app = express() ;
 var env = 'test' ;
 
 app.post('/api/druid', function(req, res) {
+    console.log(req.body) ;
     var sampleQuery = JSON.stringify(req.body) ;
+    console.log(sampleQuery) ;
 
     var headers = {
         "Content-Type": "application/json",
