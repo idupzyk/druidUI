@@ -21,14 +21,18 @@ var bodyParser = require('body-parser') ;
 var app = express() ;
 var env = 'test' ;
 
-//app.use('/lib', express.static('lib'));
-//app.use('/img', express.static('img'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/static', express.static('public'));
 
-app.post('/api/druid', function(req, res) {
-    console.log(req.body) ;
+app.post('/query', function(req, res) {
+    for (var v in req) {
+        console.log(v+" "+req[v]) ;
+    }
+    console.log("req: "+ req + "  " + typeof req) ;
+    console.log("body: "+req.body) ;
     var sampleQuery = JSON.stringify(req.body) ;
-    console.log(sampleQuery) ;
+    console.log("query: "+sampleQuery) ;
 
     var headers = {
         "Content-Type": "application/json",

@@ -1,9 +1,9 @@
 #!/bin/bash
 
 ROOT=/var/www/druidConnector
-HTML=$ROOT/html
-LIB=$ROOT/lib
-IMG=$ROOT/img
+HTML=$ROOT/public
+LIB=$ROOT/public/lib
+IMG=$ROOT/public/img
 
 sudo cp druidview.html $HTML/.
 
