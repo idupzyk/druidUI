@@ -26,13 +26,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/static', express.static('public'));
 
 app.post('/query', function(req, res) {
-    for (var v in req) {
-        console.log(v+" "+req[v]) ;
-    }
-    console.log("req: "+ req + "  " + typeof req) ;
-    console.log("body: "+req.body) ;
+    //for (var v in req) {
+    //    console.log(v+" "+req[v]) ;
+    //}
+    //console.log("req: "+ req + "  " + typeof req) ;
+    //console.log("body: "+req.body) ;
     var sampleQuery = JSON.stringify(req.body) ;
-    console.log("query: "+sampleQuery) ;
+    //console.log("query: "+sampleQuery) ;
 
     var headers = {
         "Content-Type": "application/json",
@@ -59,9 +59,11 @@ app.post('/query', function(req, res) {
     
         res2.on("data", function(_data) {
             responseString += _data;
+            //console.log(_data) ;
         })
     
         res2.on("end", function(){
+            //console.log("end found!") ;
             var resultObject = JSON.parse(responseString);
             res.send(JSON.stringify(resultObject))
         })
