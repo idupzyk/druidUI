@@ -32,7 +32,7 @@ app.post('/query', function(req, res) {
     //console.log("req: "+ req + "  " + typeof req) ;
     //console.log("body: "+req.body) ;
     var sampleQuery = JSON.stringify(req.body) ;
-    //console.log("query: "+sampleQuery) ;
+    console.log("query: "+sampleQuery) ;
 
     var headers = {
         "Content-Type": "application/json",
