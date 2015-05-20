@@ -30,7 +30,7 @@ div.sidePane{
 div.selector {
     position: relative;
     width: 100%;
-    height: 55vh;
+    height: 40vh;
     white-space: nowrap;
     float: left;
     border-radius: 10px;
@@ -80,6 +80,13 @@ div.datarow {
     height: 25px;
 }
 div.srcRow {
+    position: relative ;
+    width: 15%;
+    background: white;
+    height: 25px;
+    white-space: nowrap;
+}
+div.dateRow {
     position: relative ;
     width: 15%;
     background: white;
