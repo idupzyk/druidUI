@@ -20,6 +20,7 @@ var http = require('http');
 var bodyParser = require('body-parser') ;
 var app = express() ;
 var env = 'test' ;
+app.locals.title = "druidview" 
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
