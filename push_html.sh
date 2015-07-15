@@ -8,13 +8,13 @@ IMG=$ROOT/public/img
 if [ ! -e $LIB ]
 then
     echo "Making $LIB"
-    sudo mkdir $LIB
+    sudo mkdir -p $LIB
 fi
 
 if [ ! -e $IMG ]
 then
     echo "Making $IMG"
-    sudo mkdir $IMG
+    sudo mkdir -p $IMG
 fi
 
 sudo cp druidview.html $HTML/.
